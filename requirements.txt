@@ -1,0 +1,9 @@
+langchain
+langchain_ollama
+langgraph
+sentence-transformers
+pandas
+matplotlib
+nltk
+rouge-score
+tqdm

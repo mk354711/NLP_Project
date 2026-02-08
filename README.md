@@ -1,0 +1,26 @@
+# Maintenance Action Generation with LLM Agent
+
+This project compares a vanilla LLM baseline with an agent-based workflow
+for generating maintenance actions from fault descriptions.
+
+## Task
+Input: Fault description (Problem)
+Output: Maintenance action (text generation)
+
+## Dataset
+Aircraft Historical Maintenance Logs (Fault → Action)
+(https://www.kaggle.com/datasets/merishnasuwal/aircraft-historical-maintenance-dataset)
+
+## Methods
+- Baseline: Vanilla LLM Prompting
+- Agent: GT-style constrained generation + re-ranking
+
+## Evaluation
+- BLEU
+- ROUGE-L
+
+## How to Run
+
+1. Start Ollama:
+```bash
+ollama run llama3.1:8b
