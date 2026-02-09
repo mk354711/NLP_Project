@@ -1,4 +1,4 @@
-# Maintenance Action Generation with LLM Agent
+# Agentic RAG for Industrial Maintenance Action Generation
 
 This project compares a vanilla LLM baseline with an agent-based workflow
 for generating maintenance actions from fault descriptions.
