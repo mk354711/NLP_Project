@@ -13,14 +13,15 @@ Aircraft Historical Maintenance Logs (Fault → Action)
 
 ## Methods
 - Baseline: Vanilla LLM Prompting
-- Agent: GT-style constrained generation + re-ranking
-
-## Evaluation
-- BLEU
-- ROUGE-L
+- Agent: RAG-based generation + re-ranking
 
 ## How to Run
 
 1. Start Ollama:
 ```bash
-ollama run llama3.1:8b
+ollama run llama3.2:3b
+```
+2. run python code :
+```bash
+python src/run_experiment.py
+```
