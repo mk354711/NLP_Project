@@ -1,15 +1,23 @@
 import pandas as pd
 from baseline import baseline_llm
-from agent import agent_generate
-from evaluation import evaluate
+from agent import build_agent
+#from evaluation import evaluate
 from tqdm import tqdm
-from langchain_chroma import Chroma
+import pysqlite3
+import sys
+
+sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
+from langchain_community.vectorstores import FAISS
+
 from langchain_core.documents import Document
 from datasets import Dataset
 from ragas import evaluate
 from ragas.metrics import faithfulness, answer_relevancy
 from ragas.llms import LangchainLLMWrapper
 from ragas.embeddings import LangchainEmbeddingsWrapper
+from langchain_ollama import ChatOllama, OllamaEmbeddings
+import os
+os.environ["RAGAS_MAX_WORKERS"] = "1"
 
 file_name = "data/Aircraft_Annotation_DataFile.csv"
 df = pd.read_csv(file_name)
@@ -18,6 +26,15 @@ df = df[['PROBLEM', 'ACTION']].dropna().reset_index(drop=True)
 print(f"Successfully loaded {file_name} with {len(df)} rows. First 5 rows:")
 print(df.head())
 
+embeddings = OllamaEmbeddings(
+    model="nomic-embed-text",
+    base_url="localhost:11434"
+)
+llm = ChatOllama(
+    model= "llama3.2:3b",
+    temperature=0,
+    base_url="localhost:11434"
+)
 docs = [
     Document(
         page_content=row["PROBLEM"],
@@ -25,15 +42,18 @@ docs = [
     )
     for _, row in df.iterrows()
 ]
+vectorstore = FAISS.from_documents(docs, embeddings)
 
-vectorstore = Chroma.from_documents(docs, embedding=embeddings)
 retriever = vectorstore.as_retriever(search_kwargs={"k": 12})
+
+agent_app = build_agent(retriever, llm)
+
 
 print("Vector DB 구축 완료!")
 
 
 # 샘플 평가용 데이터
-eval_df = df.sample(10, random_state=42)
+eval_df = df.sample(100)
 
 questions = eval_df["PROBLEM"].tolist()
 ground_truth = eval_df["ACTION"].tolist()
@@ -104,4 +124,4 @@ result_df = pd.DataFrame({
 
 result_df.to_csv('data/result_df.csv')
 
-print(baseline_df['answer_relevancy'].mean(), agent_df['answer_relevancy'].mean())
+print("Baseline Score : ", baseline_df['answer_relevancy'].mean(), "Agent Score : ", agent_df['answer_relevancy'].mean())

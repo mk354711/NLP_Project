@@ -1,6 +1,6 @@
 from langchain_ollama import ChatOllama
 
-LLM_NAME = "llama3.1:8b"
+LLM_NAME = "llama3.2:3b"
 BASE_URL = "http://localhost:11434"
 
 llm = ChatOllama(model=LLM_NAME, temperature=0, base_url=BASE_URL)

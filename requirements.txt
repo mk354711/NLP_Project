@@ -1,9 +1,11 @@
 langchain
 langchain_ollama
 langgraph
+langchain_community
 sentence-transformers
 pandas
 matplotlib
 nltk
 rouge-score
 tqdm
+datasets
